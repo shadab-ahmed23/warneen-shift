@@ -1,26 +1,26 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <AddShifts />
+    <!-- <div v-for="(shift, index) in shiftCards" :key="index">
+      <ShiftsCard :shift="shift" :index="index" />
+    </div> -->
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+/* eslint-disable vue/no-unused-components */
+import AddShifts from './components/AddShifts.vue';
+import ShiftsCard from './components/ShiftsCard.vue';
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
-  }
-}
+    AddShifts,
+    ShiftsCard,
+  },
+  computed: {
+    shiftCards() {
+      return this.$store.state.shifts.shiftCards;
+    },
+  },
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
