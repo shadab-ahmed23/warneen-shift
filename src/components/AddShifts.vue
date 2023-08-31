@@ -5,10 +5,41 @@
         <div class="row">
           <div class="col-md-2"></div>
           <div class="col-md-8">
-            <div class="d-flex justify-content-between titleHeader">
+            <div
+              class="d-flex justify-content-between titleHeader setUnderline"
+            >
+              <h4>Filter</h4>
+            </div>
+            <div class="mx-5 d-flex justify-content-evenly">
+              <label for="priceRange" class="form-label"
+                >Filter on Price:</label
+              >
+              {{ selectedPrice }}
+              <input
+                type="range"
+                class="form-range range-input mx-5"
+                id="priceRange"
+                :min="0"
+                :max="maxPrice"
+                v-model="selectedPrice"
+                style="width: 50%"
+              />
+              <!-- @change="filteredShifts" -->
+            </div>
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-md-2"></div>
+          <div class="col-md-8">
+            <div
+              class="d-flex justify-content-between titleHeader setUnderline"
+            >
               <h4>Shifts</h4>
-              <button class="btn btn-primary" @click="showSlider = true">
-                Add Shift
+              <button
+                class="btn btn-primary bg-dark"
+                @click="showSlider = true"
+              >
+                ADD SHIFT
               </button>
             </div>
           </div>
@@ -20,10 +51,10 @@
     <transition name="slide">
       <div v-if="showSlider" class="slider">
         <div
-          class="slider-content p-4 rounded bg-white shadow overflow-auto"
+          class="slider-content p-4 rounded test bg-white shadow overflow-auto"
           style="height: 710px"
         >
-          <h3 class="mb-4">Create / Edit</h3>
+          <h4 class="mb-4">Create / Edit</h4>
           <div class="mb-3">
             <label for="title" class="form-label">Title:</label>
             <input
@@ -171,7 +202,7 @@
       </div>
     </transition>
     <div class="mt-4">
-      <template v-if="shifts.length === 0">
+      <template v-if="filteredShifts.length === 0">
         <div class="container mt-5">
           <div class="row justify-content-center">
             <div class="col-md-6">
@@ -186,8 +217,9 @@
           </div>
         </div>
       </template>
+
       <ShiftsCard
-        v-for="(shift, index) in shifts"
+        v-for="(shift, index) in filteredShifts"
         :key="index"
         :shift="shift"
         :index="index"
@@ -210,6 +242,7 @@ export default {
       titleError: "",
       descriptionError: "",
       datesError: "",
+      selectedPrice: 0,
       showSaveClicked: false,
       editingShiftIndex: null,
       newShift: {
@@ -220,6 +253,44 @@ export default {
       selectedDate: "",
       shifts: this.$store.state.shifts,
     };
+  },
+  computed: {
+    maxPrice() {
+      let maxPrice = 0;
+
+      this.shifts.forEach((shift) => {
+        shift.cards.forEach((card) => {
+          const cardPrice = parseInt(card.price);
+          if (cardPrice > maxPrice) {
+            maxPrice = cardPrice;
+          }
+        });
+      });
+
+      return maxPrice;
+    },
+    filteredShifts() {
+      if (this.selectedPrice === 0) {
+        return this.shifts;
+      } else {
+        return this.shifts
+          .map((shift) => {
+            const filteredCards = shift.cards.filter(
+              (card) => parseInt(card.price) <= this.selectedPrice
+            );
+
+            if (filteredCards.length > 0) {
+              return {
+                ...shift,
+                cards: filteredCards,
+              };
+            } else {
+              return null;
+            }
+          })
+          .filter((shift) => shift !== null);
+      }
+    },
   },
   methods: {
     validateTitle() {
@@ -260,6 +331,8 @@ export default {
 
       if (!card.price) {
         card.priceError = "Price is required.";
+      } else if (isNaN(card.price) || parseFloat(card.price) < 0) {
+        card.priceError = "Price must be a non-negative number.";
       }
 
       if (!card.type) {
@@ -306,6 +379,7 @@ export default {
         } else {
           this.$store.commit("addShift", this.newShift);
         }
+        this.editingShiftIndex = null;
         this.clearSlider();
       }
     },
@@ -331,6 +405,7 @@ export default {
       this.showSlider = false;
       this.titleError = "";
       this.datesError = "";
+      this.selectedPrice = 0;
     },
   },
 };
@@ -391,5 +466,34 @@ export default {
 }
 .clsAl {
   text-align: center;
+}
+.range-input::-webkit-slider-thumb {
+  background-color: rgb(255, 108, 134);
+}
+.setUnderline {
+  position: relative;
+  display: inline-block;
+}
+
+.setUnderline h4::after {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  top: 29px;
+  left: 84px;
+  width: 6%;
+  height: 3px;
+  background-color: rgb(255, 108, 134);
+}
+
+.test h4::after {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  top: 53px;
+  left: 25px;
+  width: 12%;
+  height: 3px;
+  background-color: rgb(255, 108, 134);
 }
 </style>

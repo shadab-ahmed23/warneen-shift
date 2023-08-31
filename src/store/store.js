@@ -7,7 +7,6 @@ const store = createStore({
   },
   mutations: {
     addShift(state, shift) {
-      console.log(shift)
       state.shifts.push(shift);
     },
     deleteShift(state, index) {

@@ -6,6 +6,7 @@
           <div class="card">
             <div class="card-header">
               {{ shift.title }}
+
               <div class="d-flex justify-content-between align-items-center">
                 <span class="delete-button mr-5" @click="deleteShift(index)">
                   <i class="bi bi-x mr-5"></i>
@@ -28,7 +29,6 @@
                       <span>{{ card.type }}</span>
                       <span>{{ card.price }}</span>
                     </li>
-                    <!-- <button class="btn btn-primary" @click="editShift(index)">Edit</button> -->
                   </ul>
                 </div>
               </div>
@@ -43,6 +43,12 @@
 <script>
 export default {
   props: ["shift", "index"],
+  data() {
+    return {
+      selectedPrice: 0,
+    };
+  },
+ 
   methods: {
     deleteShift(index) {
       this.$store.commit("deleteShift", index);
