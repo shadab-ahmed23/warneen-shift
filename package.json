@@ -2,6 +2,7 @@
   "name": "waarneen-shift",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://wahaj9890.github.io/warneen-shift/",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
