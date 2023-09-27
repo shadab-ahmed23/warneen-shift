@@ -1,0 +1,6 @@
+version : "3.3"
+services :
+  web :
+     image : shadabahmed23/my-veu-app:latest
+     ports :
+         - "8002:8002"
